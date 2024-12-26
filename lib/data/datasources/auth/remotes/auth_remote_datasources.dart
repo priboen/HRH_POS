@@ -18,7 +18,7 @@ class AuthRemoteDatasources {
     if (response.statusCode == 200) {
       return Right(AuthResponseModel.fromJson(response.body));
     } else {
-      return Left('Failed to login');
+      return const Left('Failed to login');
     }
   }
 
@@ -33,9 +33,9 @@ class AuthRemoteDatasources {
       },
     );
     if (response.statusCode == 200) {
-      return Right(true);
+      return const Right(true);
     } else {
-      return Left('Failed to logout');
+      return const Left('Failed to logout');
     }
   }
 }
