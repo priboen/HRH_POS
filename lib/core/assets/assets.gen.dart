@@ -15,6 +15,9 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// Directory path: assets/icons/alert
+  $AssetsIconsAlertGen get alert => const $AssetsIconsAlertGen();
+
   /// File path: assets/icons/all_categories.svg
   SvgGenImage get allCategories =>
       const SvgGenImage('assets/icons/all_categories.svg');
@@ -48,6 +51,9 @@ class $AssetsIconsGen {
 
   /// File path: assets/icons/edit.svg
   SvgGenImage get edit => const SvgGenImage('assets/icons/edit.svg');
+
+  /// File path: assets/icons/email.svg
+  SvgGenImage get email => const SvgGenImage('assets/icons/email.svg');
 
   /// File path: assets/icons/food.svg
   SvgGenImage get food => const SvgGenImage('assets/icons/food.svg');
@@ -98,6 +104,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/pajak.svg
   SvgGenImage get pajak => const SvgGenImage('assets/icons/pajak.svg');
 
+  /// File path: assets/icons/password.svg
+  SvgGenImage get password => const SvgGenImage('assets/icons/password.svg');
+
   /// File path: assets/icons/payments.svg
   SvgGenImage get payments => const SvgGenImage('assets/icons/payments.svg');
 
@@ -136,6 +145,7 @@ class $AssetsIconsGen {
         done,
         drink,
         edit,
+        email,
         food,
         history,
         homeResto,
@@ -151,6 +161,7 @@ class $AssetsIconsGen {
         ongkir,
         orders,
         pajak,
+        password,
         payments,
         print,
         qrCode,
@@ -282,6 +293,24 @@ class $AssetsImagesGen {
         product3,
         product4
       ];
+}
+
+class $AssetsIconsAlertGen {
+  const $AssetsIconsAlertGen();
+
+  /// File path: assets/icons/alert/empty.svg
+  SvgGenImage get empty => const SvgGenImage('assets/icons/alert/empty.svg');
+
+  /// File path: assets/icons/alert/error.png
+  AssetGenImage get error =>
+      const AssetGenImage('assets/icons/alert/error.png');
+
+  /// File path: assets/icons/alert/success.svg
+  SvgGenImage get success =>
+      const SvgGenImage('assets/icons/alert/success.svg');
+
+  /// List of all assets
+  List<dynamic> get values => [empty, error, success];
 }
 
 class Assets {
