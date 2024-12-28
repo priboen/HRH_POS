@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hrh_pos/core/core.dart';
+import 'package:hrh_pos/core/extensions/build_context_ext.dart';
+import 'package:hrh_pos/data/datasources/auth/locals/auth_local_datasources.dart';
+import 'package:hrh_pos/presentation/auth/bloc/login_bloc/login_bloc.dart';
+import 'package:hrh_pos/presentation/home/pages/dashboard_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -111,7 +116,50 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           SpaceHeight(MediaQuery.of(context).size.height * 0.08),
-          Button.filled(onPressed: () {}, label: 'Masuk'),
+          BlocListener<LoginBloc, LoginState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                orElse: () {},
+                success: (data) {
+                  AuthLocalDatasources().saveAuthData(data);
+                  print(data);
+                  context.pushReplacement(const DashboardPage());
+                },
+                error: (error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(error),
+                      backgroundColor: AppColors.red,
+                    ),
+                  );
+                },
+              );
+            },
+            child: BlocBuilder<LoginBloc, LoginState>(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  orElse: () {
+                    return Button.filled(
+                      onPressed: () {
+                        context.read<LoginBloc>().add(
+                              LoginEvent.login(
+                                email: emailController.text,
+                                password: passwordController.text,
+                              ),
+                            );
+                      },
+                      label: 'Masuk',
+                    );
+                  },
+                  loading: () {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
