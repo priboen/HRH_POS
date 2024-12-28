@@ -4,6 +4,7 @@ import 'package:hrh_pos/core/core.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
 import 'package:hrh_pos/presentation/auth/bloc/logout_bloc/logout_bloc.dart';
 import 'package:hrh_pos/presentation/auth/pages/login_page.dart';
+import 'package:hrh_pos/presentation/home/pages/discount_page.dart';
 import 'package:hrh_pos/presentation/home/pages/home_page.dart';
 import 'package:hrh_pos/presentation/widgets/nav_item.dart';
 
@@ -18,7 +19,7 @@ class _DashboardPageState extends State<DashboardPage> {
   int _selectedIndex = 0;
   final List<Widget> _pages = [
     const HomePage(),
-    const Center(child: Text('This is page 2')),
+    const DiscountPage(),
     // const ReportPage(),
     const Center(child: Text('This is page 3')),
     const Center(child: Text('This is page 4')),
