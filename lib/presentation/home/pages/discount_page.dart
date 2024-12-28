@@ -4,11 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hrh_pos/core/core.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
 import 'package:hrh_pos/presentation/home/bloc/delete_discount/delete_discount_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/delete_tax/delete_tax_bloc.dart';
 import 'package:hrh_pos/presentation/home/bloc/get_discount/get_discount_bloc.dart';
 import 'package:hrh_pos/presentation/home/bloc/get_tax/get_tax_bloc.dart';
 import 'package:hrh_pos/presentation/home/pages/add_discount_page.dart';
+import 'package:hrh_pos/presentation/home/pages/add_tax_page.dart';
 import 'package:hrh_pos/presentation/home/pages/dashboard_page.dart';
 import 'package:hrh_pos/presentation/home/pages/edit_discount_page.dart';
+import 'package:hrh_pos/presentation/home/pages/edit_tax_pages.dart';
 import 'package:hrh_pos/presentation/widgets/custom_tab_bar.dart';
 import 'package:hrh_pos/presentation/widgets/home_title.dart';
 
@@ -65,7 +68,7 @@ class _DiscountPageState extends State<DiscountPage> {
                                       child: CircularProgressIndicator(),
                                     );
                                   },
-                                  loading: () => Center(
+                                  loading: () => const Center(
                                     child: CircularProgressIndicator(),
                                   ),
                                   error: (message) => Center(
@@ -73,7 +76,7 @@ class _DiscountPageState extends State<DiscountPage> {
                                   ),
                                   loaded: (discount) {
                                     if (discount.isEmpty) {
-                                      return Center(
+                                      return const Center(
                                         child: Text('No discount available'),
                                       );
                                     }
@@ -321,7 +324,7 @@ class _DiscountPageState extends State<DiscountPage> {
                                       child: CircularProgressIndicator(),
                                     );
                                   },
-                                  loading: () => Center(
+                                  loading: () => const Center(
                                     child: CircularProgressIndicator(),
                                   ),
                                   error: (message) => Center(
@@ -329,7 +332,7 @@ class _DiscountPageState extends State<DiscountPage> {
                                   ),
                                   loaded: (tax) {
                                     if (tax.isEmpty) {
-                                      return Center(
+                                      return const Center(
                                         child: Text('No tax available'),
                                       );
                                     }
@@ -340,15 +343,15 @@ class _DiscountPageState extends State<DiscountPage> {
                                           const NeverScrollableScrollPhysics(),
                                       gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 0.85,
-                                        crossAxisCount: 3,
+                                        childAspectRatio: 1.99,
+                                        crossAxisCount: 2,
                                         crossAxisSpacing: 30.0,
                                         mainAxisSpacing: 30.0,
                                       ),
                                       itemBuilder: (context, index) {
                                         final taxes = tax[index];
                                         return Card(
-                                          color: AppColors.card,
+                                          color: AppColors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),
@@ -377,6 +380,132 @@ class _DiscountPageState extends State<DiscountPage> {
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
                                                 ),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      minimumSize:
+                                                          const Size(150, 50),
+                                                      backgroundColor:
+                                                          AppColors.primary,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+                                                      context.push(EditTaxPages(
+                                                        tax: taxes,
+                                                      ));
+                                                    },
+                                                    child:
+                                                        const Text('Edit Pajak',
+                                                            style: TextStyle(
+                                                              color: AppColors
+                                                                  .white,
+                                                            )),
+                                                  ),
+                                                  const SpaceWidth(16.0),
+                                                  ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      minimumSize:
+                                                          const Size(150, 50),
+                                                      backgroundColor:
+                                                          AppColors.red,
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                      ),
+                                                    ),
+                                                    onPressed: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'Hapus Pajak'),
+                                                            content: const Text(
+                                                                'Apakah anda yakin ingin menghapus pajak ini?'),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  context
+                                                                      .read<
+                                                                          DeleteTaxBloc>()
+                                                                      .add(DeleteTaxEvent.deletedTax(
+                                                                          idTax: 
+                                                                              taxes.idPajak!));
+                                                                  context
+                                                                      .read<
+                                                                          DeleteTaxBloc>()
+                                                                      .stream
+                                                                      .listen(
+                                                                          (state) {
+                                                                    state
+                                                                        .maybeWhen(
+                                                                      orElse:
+                                                                          () {},
+                                                                      success:
+                                                                          () {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(const SnackBar(
+                                                                          content:
+                                                                              Text('Pajak berhasil dihapus'),
+                                                                          backgroundColor:
+                                                                              Colors.green,
+                                                                        ));
+                                                                        context.pushReplacement(
+                                                                            const DashboardPage());
+                                                                      },
+                                                                      error:
+                                                                          (message) {
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(SnackBar(
+                                                                          content:
+                                                                              Text(message),
+                                                                          backgroundColor:
+                                                                              Colors.red,
+                                                                        ));
+                                                                      },
+                                                                    );
+                                                                  });
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                        'Ya'),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                        'Tidak'),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    child: const Text(
+                                                      'Hapus Pajak',
+                                                      style: TextStyle(
+                                                          color:
+                                                              AppColors.white),
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ],
                                           ),
@@ -413,13 +542,15 @@ class _DiscountPageState extends State<DiscountPage> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          context.push(AddDiscountPage());
+                          context.push(const AddDiscountPage());
                         },
-                        child: Text("Diskon"),
+                        child: const Text("Diskon"),
                       ),
                       TextButton(
-                        onPressed: () {},
-                        child: Text("Pajak"),
+                        onPressed: () {
+                          context.push(const AddTaxPage());
+                        },
+                        child: const Text("Pajak"),
                       ),
                     ],
                   ),

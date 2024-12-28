@@ -68,8 +68,8 @@ class DiscountRemoteDatasources {
           'keterangan': keterangan,
           'status': status,
           'diskon_persen': diskonPersen,
-          'tanggal_mulai': tanggalMulai.toIso8601String(),
-          'tanggal_selesai': tanggalSelesai.toIso8601String(),
+          'tanggal_mulai': tanggalMulai.toString(),
+          'tanggal_selesai': tanggalSelesai.toString(),
         },
       ),
     );
@@ -110,8 +110,8 @@ class DiscountRemoteDatasources {
           'keterangan': keterangan,
           'status': status,
           'diskon_persen': diskonPersen,
-          'tanggal_mulai': tanggalMulai.toIso8601String(),
-          'tanggal_selesai': tanggalSelesai.toIso8601String(),
+          'tanggal_mulai': tanggalMulai.toString(),
+          'tanggal_selesai': tanggalSelesai.toString(),
         },
       ),
     );

@@ -111,7 +111,6 @@ class _AddDiscountPageState extends State<AddDiscountPage> {
                               );
                               return;
                             }
-
                             try {
                               final DateFormat formatter =
                                   DateFormat('yyyy-MM-dd');

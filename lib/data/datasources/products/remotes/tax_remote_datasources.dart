@@ -54,4 +54,52 @@ class TaxRemoteDatasources {
           jsonDecode(response.body)['message'] ?? 'Failed to process request');
     }
   }
+
+  Future<Either<String, Tax>> editTax(
+    int? id,
+    String namaPajak,
+    int pajakPersen,
+  )async{
+    final authData = await AuthLocalDatasources().getAuthData();
+    final url = Uri.parse('${Variables.baseUrl}/api/api-pajak/$id');
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${authData.token}',
+      },
+      body: jsonEncode(
+        {
+          'nama_pajak': namaPajak,
+          'pajak_persen': pajakPersen,
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      return Right(Tax.fromJson(response.body));
+    } else {
+      return Left(
+          jsonDecode(response.body)['message'] ?? 'Failed to process request');
+    }
+  }
+
+  Future<Either<String, String>> deleteTax(int id) async {
+    final authData = await AuthLocalDatasources().getAuthData();
+    final url = Uri.parse('${Variables.baseUrl}/api/api-pajak/$id');
+    final response = await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${authData.token}',
+      },
+    );
+    if (response.statusCode == 200) {
+      return const Right('Berhasil menghapus pajak');
+    } else {
+      return Left(
+          jsonDecode(response.body)['message'] ?? 'Failed to process request');
+    }
+  }
 }
