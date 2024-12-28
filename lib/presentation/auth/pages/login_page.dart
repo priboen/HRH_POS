@@ -45,9 +45,9 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.2),
-            child: SvgPicture.asset(
-              Assets.icons.homeResto.path,
-              width: 100,
+            child: Image.asset(
+              Assets.images.logo.path,
+              width: MediaQuery.of(context).size.width,
               height: 100,
               color: AppColors.primary,
             ),
@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: MediaQuery.of(context).size.width * 0.016,
-                  color: AppColors.black),
+                  color: AppColors.primary),
             ),
           ),
           SpaceHeight(MediaQuery.of(context).size.height * 0.02),
