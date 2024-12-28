@@ -37,7 +37,7 @@ class CustomTextField extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.03,
+              fontSize: MediaQuery.of(context).size.width * 0.015,
               fontWeight: FontWeight.w700,
             ),
           ),
