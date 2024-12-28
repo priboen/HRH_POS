@@ -21,4 +21,14 @@ class GetProductBloc extends Bloc<GetProductEvent, GetProductState> {
       },
     );
   }
+
+  List<Category> extractCategoriesFromProducts(List<Product> products) {
+    final uniqueCategories = <Category>{};
+    for (var product in products) {
+      if (product.category != null) {
+        uniqueCategories.add(product.category!);
+      }
+    }
+    return uniqueCategories.toList();
+  }
 }
