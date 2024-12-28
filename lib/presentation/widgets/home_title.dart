@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hrh_pos/core/core.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
 
 import '../../../core/components/search_input.dart';
@@ -24,8 +25,14 @@ class HomeTitle extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.asset(
+              Assets.images.logo.path,
+              width: MediaQuery.of(context).size.width * 0.05,
+              height: 100,
+              color: AppColors.primary,
+            ),
             const Text(
-              'HRH POS',
+              'Point on Sale',
               style: TextStyle(
                 color: AppColors.primary,
                 fontSize: 22,
