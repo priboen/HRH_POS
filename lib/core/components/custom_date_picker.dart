@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:hrh_pos/core/core.dart';
-import 'package:hrh_pos/core/extensions/date_time_ext.dart';
+import 'package:hrh_pos/core/extensions/extensions.dart';
+
+import '../core.dart';
 
 class CustomDatePicker extends StatefulWidget {
   final void Function(DateTime selectedDate)? onDateSelected;
-  final DateTime initialDate;
+  final DateTime? initialDate;
   final Widget? prefix;
+  final String label;
+  final bool showLabel;
 
   const CustomDatePicker({
     super.key,
-    required this.initialDate,
+    required this.label,
+    this.showLabel = true,
+    this.initialDate,
     this.onDateSelected,
     this.prefix,
   });
@@ -19,24 +24,35 @@ class CustomDatePicker extends StatefulWidget {
 }
 
 class _CustomDatePickerState extends State<CustomDatePicker> {
+  late TextEditingController controller;
   late DateTime selectedDate;
 
   @override
   void initState() {
-    selectedDate = widget.initialDate;
+    controller = TextEditingController(
+      text: widget.initialDate?.toFormattedDate(),
+    );
+    selectedDate = widget.initialDate ?? DateTime.now();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1900),
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
+        controller.text = selectedDate.toFormattedDate();
       });
       if (widget.onDateSelected != null) {
         widget.onDateSelected!(picked);
@@ -49,44 +65,36 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          width: 500,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                child: GestureDetector(
-                  onTap: () => _selectDate(context),
-                  child: AbsorbPointer(
-                    child: TextFormField(
-                      style: const TextStyle(
-                        color: AppColors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      readOnly: true,
-                      controller: TextEditingController(
-                        text: selectedDate.toFormattedDate2(),
-                      ),
-                      decoration: InputDecoration(
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Assets.icons.calendar.svg(),
-                        ),
-                        prefix: widget.prefix,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6.0),
-                          borderSide: const BorderSide(color: AppColors.stroke),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6.0),
-                          borderSide: const BorderSide(color: AppColors.stroke),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        if (widget.showLabel) ...[
+          Text(
+            widget.label,
+            style:  TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.015,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 12.0),
+        ],
+        TextFormField(
+          controller: controller,
+          onTap: () => _selectDate(context),
+          readOnly: true,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16.0),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16.0),
+              borderSide: const BorderSide(color: Colors.grey),
+            ),
+            prefixIcon: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Assets.icons.calendar.svg(),
+            ),
+            hintText: widget.initialDate != null
+                ? selectedDate.toFormattedDate()
+                : widget.label,
           ),
         ),
       ],
