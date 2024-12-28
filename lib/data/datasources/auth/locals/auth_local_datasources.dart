@@ -14,12 +14,16 @@ class AuthLocalDatasources {
 
   Future<AuthResponseModel> getAuthData() async {
     final prefs = await SharedPreferences.getInstance();
-    final authData = prefs.getString('auth_data');
-    return AuthResponseModel.fromJson(authData!);
+    final authData = prefs.getString('auth_user');
+    if (authData != null) {
+      return AuthResponseModel.fromJson(authData);
+    } else {
+      throw Exception('No auth data found');
+    }
   }
 
   Future<bool> isUserLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey('auth_data');
+    return prefs.containsKey('auth_user');
   }
 }

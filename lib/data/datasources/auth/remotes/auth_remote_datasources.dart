@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:hrh_pos/data/datasources/auth/locals/auth_local_datasources.dart';
 import 'package:http/http.dart' as http;
@@ -16,9 +18,11 @@ class AuthRemoteDatasources {
       },
     );
     if (response.statusCode == 200) {
+      print(response.body);
       return Right(AuthResponseModel.fromJson(response.body));
     } else {
-      return const Left('Failed to login');
+      return Left(
+          jsonDecode(response.body)['message'] ?? 'Failed to process request');
     }
   }
 
@@ -30,12 +34,15 @@ class AuthRemoteDatasources {
       headers: {
         'Authorization': 'Bearer ${authData.token}',
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
     );
     if (response.statusCode == 200) {
+      await AuthLocalDatasources().removeAuthData();
       return const Right(true);
     } else {
-      return const Left('Failed to logout');
+      return Left(
+          jsonDecode(response.body)['message'] ?? 'Failed to process request');
     }
   }
 }
