@@ -106,54 +106,7 @@ class ProductCard extends StatelessWidget {
               builder: (context, state) {
                 return state.maybeWhen(
                   orElse: () => const SizedBox(),
-                  loaded: (products) {
-                    // final productId = data.idProduct;
-
-                    // // Tangani jika productId null
-                    // if (productId == null) {
-                    //   return const Align(
-                    //     alignment: Alignment.topRight,
-                    //     child: SizedBox(),
-                    //   );
-                    // }
-
-                    // final quantity = quantities[productId] ?? 0;
-
-                    // return Align(
-                    //   alignment: Alignment.topRight,
-                    //   child: GestureDetector(
-                    //     onTap: () {
-                    //       context.read<CheckoutBloc>().add(
-                    //             CheckoutEvent.addItem(data),
-                    //           );
-                    //     },
-                    //     onLongPress: () {
-                    //       context.read<CheckoutBloc>().add(
-                    //             CheckoutEvent.removeItem(data),
-                    //           );
-                    //     },
-                    //     child: Container(
-                    //       width: 40,
-                    //       height: 40,
-                    //       decoration: const BoxDecoration(
-                    //         color: AppColors.primary,
-                    //         borderRadius:
-                    //             BorderRadius.all(Radius.circular(9.0)),
-                    //       ),
-                    //       child: Center(
-                    //         child: Text(
-                    //           quantity.toString(),
-                    //           style: const TextStyle(
-                    //             color: Colors.white,
-                    //             fontSize: 16,
-                    //             fontWeight: FontWeight.bold,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // );
-
+                  loaded: (products, discount, tax) {
                     return products.any((element) => element.product == data)
                         ? products
                                     .firstWhere(
