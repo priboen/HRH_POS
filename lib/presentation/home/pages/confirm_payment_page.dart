@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hrh_pos/core/core.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
 import 'package:hrh_pos/presentation/home/bloc/checkout/checkout_bloc.dart';
 import 'package:hrh_pos/presentation/home/bloc/get_payment/get_payment_bloc.dart';
-import 'package:hrh_pos/presentation/home/pages/dashboard_page.dart';
+import 'package:hrh_pos/presentation/home/controllers/confirm_payment_controller.dart';
+import 'package:hrh_pos/presentation/home/dialog/qris_dialog_page.dart';
 import 'package:hrh_pos/presentation/widgets/order_menu.dart';
 
 class ConfirmPaymentPage extends StatefulWidget {
-  const ConfirmPaymentPage({super.key});
+  final String selectedOption;
+  const ConfirmPaymentPage({super.key, required this.selectedOption});
 
   @override
   State<ConfirmPaymentPage> createState() => _ConfirmPaymentPageState();
 }
 
 class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
+  late ConfirmPaymentController paymentController;
   late final TextEditingController totalPriceController;
   String? selectedPayment;
 
   @override
   void initState() {
     totalPriceController = TextEditingController();
+    paymentController = ConfirmPaymentController(totalPriceController);
     context.read<GetPaymentBloc>().add(const GetPaymentEvent.getPayments());
     super.initState();
   }
@@ -71,22 +74,17 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                 ),
                               ],
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                context.pushReplacement(const DashboardPage());
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(16.0),
-                                decoration: const BoxDecoration(
-                                  color: AppColors.primary,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.0)),
-                                ),
-                                child: const Text(
-                                  'Reset Order',
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                  ),
+                            Container(
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: const BoxDecoration(
+                                color: AppColors.primary,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8.0)),
+                              ),
+                              child: Text(
+                                widget.selectedOption,
+                                style: const TextStyle(
+                                  color: AppColors.white,
                                 ),
                               ),
                             ),
@@ -245,6 +243,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                     return total - totalDiskon + totalPajak;
                                   },
                                 );
+                                paymentController.subtotal = subtotal.toInt();
                                 return Flexible(
                                   child: Text(
                                     subtotal.toInt().currencyFormatRp,
@@ -344,10 +343,23 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                               ? Button.filled(
                                                   width: 120.0,
                                                   onPressed: () {
-                                                    setState(() {
-                                                      selectedPayment =
-                                                          payment.namaPayment;
-                                                    });
+                                                    if (payment.namaPayment
+                                                            ?.toLowerCase() ==
+                                                        'qris') {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) =>
+                                                            QrisDialogPage(
+                                                                imageUrl: payment
+                                                                        .imagePayment ??
+                                                                    ''),
+                                                      );
+                                                    } else {
+                                                      setState(() {
+                                                        selectedPayment =
+                                                            payment.namaPayment;
+                                                      });
+                                                    }
                                                   },
                                                   label:
                                                       payment.namaPayment ?? '',
@@ -401,22 +413,30 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                               children: [
                                 Button.filled(
                                   width: 150.0,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    paymentController.setExactTotal();
+                                  },
                                   label: 'UANG PAS',
                                 ),
                                 Button.filled(
                                   width: 150.0,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    paymentController.updateTotal(20000);
+                                  },
                                   label: 'Rp 20.000',
                                 ),
                                 Button.filled(
                                   width: 150.0,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    paymentController.updateTotal(50000);
+                                  },
                                   label: 'Rp 50.000',
                                 ),
                                 Button.filled(
                                   width: 150.0,
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    paymentController.updateTotal(100000);
+                                  },
                                   label: 'Rp 100.000',
                                 ),
                               ],
