@@ -4,4 +4,6 @@ part of 'get_product_bloc.dart';
 class GetProductEvent with _$GetProductEvent {
   const factory GetProductEvent.started() = _Started;
   const factory GetProductEvent.getProduct() = _GetProduct;
+  const factory GetProductEvent.searchProduct(String query) = _SearchProduct;
+
 }

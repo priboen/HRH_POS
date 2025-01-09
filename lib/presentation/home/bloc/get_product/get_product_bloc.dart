@@ -20,6 +20,18 @@ class GetProductBloc extends Bloc<GetProductEvent, GetProductState> {
         );
       },
     );
+    on<_SearchProduct>((event, emit) async {
+      if (event.query.isEmpty) {
+        add(const GetProductEvent.getProduct());
+      } else {
+        final currentState = state;
+        if (currentState is _Loaded) {
+          final filteredProducts =
+              searchProduct(currentState.products, event.query);
+          emit(_Loaded(filteredProducts));
+        }
+      }
+    });
   }
 
   List<Category> extractCategoriesFromProducts(List<Product> products) {
@@ -30,5 +42,13 @@ class GetProductBloc extends Bloc<GetProductEvent, GetProductState> {
       }
     }
     return uniqueCategories.toList();
+  }
+
+  //search product
+  List<Product> searchProduct(List<Product> products, String query) {
+    return products
+        .where((element) =>
+            element.nameProduct!.toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 }
