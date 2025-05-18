@@ -5,7 +5,8 @@ import 'package:hrh_pos/core/extensions/build_context_ext.dart';
 
 class QrisDialogPage extends StatelessWidget {
   final String imageUrl;
-  const QrisDialogPage({super.key, required this.imageUrl});
+  final VoidCallback? onPayPressed;
+  const QrisDialogPage({super.key, required this.imageUrl, this.onPayPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +28,28 @@ class QrisDialogPage extends StatelessWidget {
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 16),
-          Button.filled(
-            onPressed: () {
-              context.pop();
-            },
-            label: 'Tutup',
-          ),
+          Row(
+            children: [
+              Button.filled(
+                width: 100, height: 40,
+                onPressed: () {
+                  context.pop();
+                },
+                label: 'Tutup',
+              ),
+              Spacer(),
+              Button.filled(
+                width: 100, height: 40,
+                onPressed: () {
+                  if(onPayPressed != null) {
+                    onPayPressed!();
+                  }
+                  context.pop();
+                },
+                label: 'Bayar',
+              ),
+            ],
+          )
         ],
       ),
     );

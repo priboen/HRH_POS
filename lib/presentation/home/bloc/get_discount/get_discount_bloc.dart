@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hrh_pos/data/datasources/products/remotes/discount_remote_datasources.dart';
+import 'package:hrh_pos/data/datasources/remotes/discount_remote_datasources.dart';
 import 'package:hrh_pos/data/models/response/discount_response_model.dart';
 
 part 'get_discount_event.dart';

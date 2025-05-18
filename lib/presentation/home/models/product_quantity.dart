@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:hrh_pos/data/models/response/product_response_model.dart';
 
 class ProductQuantity {

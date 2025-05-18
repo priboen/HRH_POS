@@ -102,12 +102,35 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       },
     );
 
+    // on<_AddDiscount>(
+    //   (event, emit) {
+    //     var currentState = state as _Loaded;
+    //     emit(_Loaded(currentState.items, event.discount, currentState.tax));
+    //   },
+    // );
+
     on<_AddDiscount>(
       (event, emit) {
         var currentState = state as _Loaded;
+
+        // Periksa apakah diskon aktif
+        final now = DateTime.now();
+        final isActive = event.discount.tanggalMulai != null &&
+            event.discount.tanggalSelesai != null &&
+            now.isAfter(event.discount.tanggalMulai!) &&
+            now.isBefore(event.discount.tanggalSelesai!);
+
+        if (!isActive) {
+          // Diskon tidak aktif, abaikan atau tampilkan pesan
+          print('Diskon tidak aktif dan tidak akan ditambahkan.');
+          return;
+        }
+
+        // Jika diskon aktif, tambahkan ke state
         emit(_Loaded(currentState.items, event.discount, currentState.tax));
       },
     );
+
     on<_RemoveDiscount>((event, emit) {
       // TODO: implement event handler
       var currentState = state as _Loaded;

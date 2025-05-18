@@ -3,15 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hrh_pos/core/core.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
-import 'package:hrh_pos/presentation/home/bloc/delete_discount/delete_discount_bloc.dart';
-import 'package:hrh_pos/presentation/home/bloc/delete_tax/delete_tax_bloc.dart';
-import 'package:hrh_pos/presentation/home/bloc/get_discount/get_discount_bloc.dart';
-import 'package:hrh_pos/presentation/home/bloc/get_tax/get_tax_bloc.dart';
-import 'package:hrh_pos/presentation/home/pages/add_discount_page.dart';
-import 'package:hrh_pos/presentation/home/pages/add_tax_page.dart';
-import 'package:hrh_pos/presentation/home/pages/dashboard_page.dart';
-import 'package:hrh_pos/presentation/home/pages/edit_discount_page.dart';
-import 'package:hrh_pos/presentation/home/pages/edit_tax_pages.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_discount/local_discount_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_tax/local_tax_bloc.dart';
 import 'package:hrh_pos/presentation/widgets/custom_tab_bar.dart';
 import 'package:hrh_pos/presentation/widgets/home_title.dart';
 
@@ -27,8 +20,12 @@ class _DiscountPageState extends State<DiscountPage> {
 
   @override
   void initState() {
-    context.read<GetDiscountBloc>().add(const GetDiscountEvent.getDiscount());
-    context.read<GetTaxBloc>().add(const GetTaxEvent.getTax());
+    // context.read<GetDiscountBloc>().add(const GetDiscountEvent.getDiscount());
+    // context.read<GetTaxBloc>().add(const GetTaxEvent.getTax());
+    context
+        .read<LocalDiscountBloc>()
+        .add(const LocalDiscountEvent.getDiscounts());
+    context.read<LocalTaxBloc>().add(const LocalTaxEvent.getTaxes());
     super.initState();
   }
 
@@ -59,8 +56,8 @@ class _DiscountPageState extends State<DiscountPage> {
                         initialTabIndex: 0,
                         tabViews: [
                           SizedBox(
-                            child:
-                                BlocBuilder<GetDiscountBloc, GetDiscountState>(
+                            child: BlocBuilder<LocalDiscountBloc,
+                                LocalDiscountState>(
                               builder: (context, state) {
                                 return state.maybeWhen(
                                   orElse: () {
@@ -87,7 +84,7 @@ class _DiscountPageState extends State<DiscountPage> {
                                           const NeverScrollableScrollPhysics(),
                                       gridDelegate:
                                           const SliverGridDelegateWithFixedCrossAxisCount(
-                                        childAspectRatio: 1.99,
+                                        childAspectRatio: 3,
                                         crossAxisCount: 2,
                                         crossAxisSpacing: 15.0,
                                         mainAxisSpacing: 15.0,
@@ -130,7 +127,8 @@ class _DiscountPageState extends State<DiscountPage> {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        discounts.namaDiskon!,
+                                                        discounts.namaDiskon ??
+                                                            '',
                                                         style: const TextStyle(
                                                             fontSize: 24.0,
                                                             fontWeight:
@@ -152,15 +150,29 @@ class _DiscountPageState extends State<DiscountPage> {
                                                         ],
                                                       ),
                                                       Text(
-                                                          'Berlaku Mulai : ${discounts.tanggalMulai!.toFormattedDate()}'),
+                                                        'Berlaku Mulai : ${discounts.tanggalMulai != null ? discounts.tanggalMulai!.toFormattedDate() : 'Tidak tersedia'}',
+                                                      ),
                                                       Text(
-                                                          'Berakhir Pada : ${discounts.tanggalSelesai!.toFormattedDate()}'),
+                                                        'Berakhir Pada : ${discounts.tanggalSelesai != null ? discounts.tanggalSelesai!.toFormattedDate() : 'Tidak tersedia'}',
+                                                      ),
                                                     ],
                                                   ),
                                                   const Spacer(),
                                                   Chip(
                                                     label: Text(
-                                                      discounts.status != null
+                                                      (discounts
+                                                                      .tanggalMulai !=
+                                                                  null &&
+                                                              discounts
+                                                                      .tanggalSelesai !=
+                                                                  null &&
+                                                              DateTime.now()
+                                                                  .isAfter(discounts
+                                                                      .tanggalMulai!) &&
+                                                              DateTime.now()
+                                                                  .isBefore(
+                                                                      discounts
+                                                                          .tanggalSelesai!))
                                                           ? 'Aktif'
                                                           : 'Tidak Aktif',
                                                       style: const TextStyle(
@@ -171,138 +183,21 @@ class _DiscountPageState extends State<DiscountPage> {
                                                       ),
                                                     ),
                                                     side: BorderSide.none,
-                                                    backgroundColor:
-                                                        discounts.status != null
-                                                            ? Colors.green
-                                                            : Colors.red,
+                                                    backgroundColor: (discounts
+                                                                    .tanggalMulai !=
+                                                                null &&
+                                                            discounts
+                                                                    .tanggalSelesai !=
+                                                                null &&
+                                                            DateTime.now()
+                                                                .isAfter(discounts
+                                                                    .tanggalMulai!) &&
+                                                            DateTime.now()
+                                                                .isBefore(discounts
+                                                                    .tanggalSelesai!))
+                                                        ? Colors.green
+                                                        : Colors.red,
                                                   ),
-                                                ],
-                                              ),
-                                              const SpaceHeight(64.0),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      minimumSize:
-                                                          const Size(150, 50),
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      context.push(
-                                                          EditDiscountPage(
-                                                              discount:
-                                                                  discounts));
-                                                    },
-                                                    child: const Text(
-                                                        'Edit Diskon',
-                                                        style: TextStyle(
-                                                          color:
-                                                              AppColors.white,
-                                                        )),
-                                                  ),
-                                                  const SpaceWidth(16.0),
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      minimumSize:
-                                                          const Size(150, 50),
-                                                      backgroundColor:
-                                                          AppColors.red,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              title: const Text(
-                                                                  'Hapus Diskon'),
-                                                              content: const Text(
-                                                                  'Apakah anda yakin ingin menghapus diskon ini?'),
-                                                              actions: [
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    context
-                                                                        .read<
-                                                                            DeleteDiscountBloc>()
-                                                                        .add(DeleteDiscountEvent.deleteDiscount(
-                                                                            idDiskon:
-                                                                                discounts.idDiskon!));
-                                                                    context
-                                                                        .read<
-                                                                            DeleteDiscountBloc>()
-                                                                        .stream
-                                                                        .listen(
-                                                                            (state) {
-                                                                      state
-                                                                          .maybeWhen(
-                                                                        orElse:
-                                                                            () {},
-                                                                        success:
-                                                                            () {
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(const SnackBar(
-                                                                            content:
-                                                                                Text('Diskon berhasil dihapus'),
-                                                                            backgroundColor:
-                                                                                Colors.green,
-                                                                          ));
-                                                                          context
-                                                                              .pushReplacement(const DashboardPage());
-                                                                        },
-                                                                        error:
-                                                                            (message) {
-                                                                          ScaffoldMessenger.of(context)
-                                                                              .showSnackBar(SnackBar(
-                                                                            content:
-                                                                                Text(message),
-                                                                            backgroundColor:
-                                                                                Colors.red,
-                                                                          ));
-                                                                        },
-                                                                      );
-                                                                    });
-                                                                  },
-                                                                  child:
-                                                                      const Text(
-                                                                          'Ya'),
-                                                                ),
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: const Text(
-                                                                      'Tidak'),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          });
-                                                    },
-                                                    child: const Text(
-                                                      'Hapus Diskon',
-                                                      style: TextStyle(
-                                                          color:
-                                                              AppColors.white),
-                                                    ),
-                                                  )
                                                 ],
                                               ),
                                             ],
@@ -316,7 +211,7 @@ class _DiscountPageState extends State<DiscountPage> {
                             ),
                           ),
                           SizedBox(
-                            child: BlocBuilder<GetTaxBloc, GetTaxState>(
+                            child: BlocBuilder<LocalTaxBloc, LocalTaxState>(
                               builder: (context, state) {
                                 return state.maybeWhen(
                                   orElse: () {
@@ -381,132 +276,6 @@ class _DiscountPageState extends State<DiscountPage> {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      minimumSize:
-                                                          const Size(150, 50),
-                                                      backgroundColor:
-                                                          AppColors.primary,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      context.push(EditTaxPages(
-                                                        tax: taxes,
-                                                      ));
-                                                    },
-                                                    child:
-                                                        const Text('Edit Pajak',
-                                                            style: TextStyle(
-                                                              color: AppColors
-                                                                  .white,
-                                                            )),
-                                                  ),
-                                                  const SpaceWidth(16.0),
-                                                  ElevatedButton(
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      minimumSize:
-                                                          const Size(150, 50),
-                                                      backgroundColor:
-                                                          AppColors.red,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10.0),
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            title: const Text(
-                                                                'Hapus Pajak'),
-                                                            content: const Text(
-                                                                'Apakah anda yakin ingin menghapus pajak ini?'),
-                                                            actions: [
-                                                              TextButton(
-                                                                onPressed: () {
-                                                                  context
-                                                                      .read<
-                                                                          DeleteTaxBloc>()
-                                                                      .add(DeleteTaxEvent.deletedTax(
-                                                                          idTax: 
-                                                                              taxes.idPajak!));
-                                                                  context
-                                                                      .read<
-                                                                          DeleteTaxBloc>()
-                                                                      .stream
-                                                                      .listen(
-                                                                          (state) {
-                                                                    state
-                                                                        .maybeWhen(
-                                                                      orElse:
-                                                                          () {},
-                                                                      success:
-                                                                          () {
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(const SnackBar(
-                                                                          content:
-                                                                              Text('Pajak berhasil dihapus'),
-                                                                          backgroundColor:
-                                                                              Colors.green,
-                                                                        ));
-                                                                        context.pushReplacement(
-                                                                            const DashboardPage());
-                                                                      },
-                                                                      error:
-                                                                          (message) {
-                                                                        ScaffoldMessenger.of(context)
-                                                                            .showSnackBar(SnackBar(
-                                                                          content:
-                                                                              Text(message),
-                                                                          backgroundColor:
-                                                                              Colors.red,
-                                                                        ));
-                                                                      },
-                                                                    );
-                                                                  });
-                                                                },
-                                                                child:
-                                                                    const Text(
-                                                                        'Ya'),
-                                                              ),
-                                                              TextButton(
-                                                                onPressed: () {
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                },
-                                                                child:
-                                                                    const Text(
-                                                                        'Tidak'),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                    child: const Text(
-                                                      'Hapus Pajak',
-                                                      style: TextStyle(
-                                                          color:
-                                                              AppColors.white),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
                                             ],
                                           ),
                                         );
@@ -526,43 +295,6 @@ class _DiscountPageState extends State<DiscountPage> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Tambah Data'),
-                content: const Text('Pilih jenis data yang ingin ditambahkan'),
-                actions: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          context.push(const AddDiscountPage());
-                        },
-                        child: const Text("Diskon"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          context.push(const AddTaxPage());
-                        },
-                        child: const Text("Pajak"),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        child: const Icon(
-          Icons.add,
-          color: AppColors.white,
-        ),
       ),
     );
   }

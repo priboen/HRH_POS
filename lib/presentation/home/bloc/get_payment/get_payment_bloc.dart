@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hrh_pos/data/datasources/products/remotes/payment_remote_datasources.dart';
+import 'package:hrh_pos/data/datasources/remotes/payment_remote_datasources.dart';
 import 'package:hrh_pos/data/models/response/payment_response_model.dart';
 
 part 'get_payment_event.dart';

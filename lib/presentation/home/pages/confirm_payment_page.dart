@@ -4,9 +4,13 @@ import 'package:hrh_pos/core/core.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
 import 'package:hrh_pos/presentation/home/bloc/checkout/checkout_bloc.dart';
 import 'package:hrh_pos/presentation/home/bloc/get_payment/get_payment_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_payment/local_payment_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/order/order_bloc.dart';
 import 'package:hrh_pos/presentation/home/controllers/confirm_payment_controller.dart';
 import 'package:hrh_pos/presentation/home/dialog/qris_dialog_page.dart';
+import 'package:hrh_pos/presentation/home/models/product_quantity.dart';
 import 'package:hrh_pos/presentation/widgets/order_menu.dart';
+import 'package:hrh_pos/presentation/widgets/success_payment_dialog.dart';
 
 class ConfirmPaymentPage extends StatefulWidget {
   final String selectedOption;
@@ -20,12 +24,13 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
   late ConfirmPaymentController paymentController;
   late final TextEditingController totalPriceController;
   String? selectedPayment;
+  int? selectedIdPayment;
 
   @override
   void initState() {
     totalPriceController = TextEditingController();
     paymentController = ConfirmPaymentController(totalPriceController);
-    context.read<GetPaymentBloc>().add(const GetPaymentEvent.getPayments());
+    context.read<LocalPaymentBloc>().add(const LocalPaymentEvent.getPayments());
     super.initState();
   }
 
@@ -221,6 +226,21 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                             ),
                             BlocBuilder<CheckoutBloc, CheckoutState>(
                               builder: (context, state) {
+                                // final subtotal = state.maybeWhen(
+                                //   orElse: () => 0,
+                                //   loaded: (items, discount, tax) {
+                                //     final total = items.isNotEmpty
+                                //         ? items
+                                //             .map((e) =>
+                                //                 e.product.price!
+                                //                     .toIntegerFromText *
+                                //                 e.quantity)
+                                //             .reduce((value, element) =>
+                                //                 value + element)
+                                //         : 0;
+                                //     return total;
+                                //   },
+                                // );
                                 final subtotal = state.maybeWhen(
                                   orElse: () => 0,
                                   loaded: (items, discount, tax) {
@@ -233,13 +253,22 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                             .reduce((value, element) =>
                                                 value + element)
                                         : 0;
+                                    // final totalDiskon =
+                                    //     (discount?.diskonPersen ?? 0) *
+                                    //         total /
+                                    //         100;
                                     final totalDiskon =
                                         (discount?.diskonPersen ?? 0) *
                                             total /
                                             100;
+
+                                    // final totalPajak = (tax?.pajakPersen ?? 0) *
+                                    // (total - totalDiskon) /
+                                    // 100;
                                     final totalPajak = (tax?.pajakPersen ?? 0) *
                                         (total - totalDiskon) /
                                         100;
+
                                     return total - totalDiskon + totalPajak;
                                   },
                                 );
@@ -282,7 +311,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            BlocBuilder<GetPaymentBloc, GetPaymentState>(
+                            BlocBuilder<LocalPaymentBloc, LocalPaymentState>(
                               builder: (context, state) {
                                 return state.maybeWhen(
                                   orElse: () => const Text('No Payment Method'),
@@ -314,7 +343,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                               ),
                             ),
                             const SpaceHeight(12.0),
-                            BlocBuilder<GetPaymentBloc, GetPaymentState>(
+                            BlocBuilder<LocalPaymentBloc, LocalPaymentState>(
                               builder: (context, state) {
                                 return state.maybeWhen(
                                   orElse: () => const Center(
@@ -346,18 +375,31 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                                     if (payment.namaPayment
                                                             ?.toLowerCase() ==
                                                         'qris') {
+                                                      setState(() {
+                                                        selectedIdPayment =
+                                                            payment.idPayment;
+                                                        selectedPayment =
+                                                            payment.namaPayment;
+                                                      });
                                                       showDialog(
                                                         context: context,
                                                         builder: (context) =>
                                                             QrisDialogPage(
-                                                                imageUrl: payment
-                                                                        .imagePayment ??
-                                                                    ''),
+                                                          imageUrl: payment
+                                                                  .imagePayment ??
+                                                              '',
+                                                          onPayPressed: () {
+                                                            paymentController
+                                                                .setExactTotal();
+                                                          },
+                                                        ),
                                                       );
                                                     } else {
                                                       setState(() {
                                                         selectedPayment =
                                                             payment.namaPayment;
+                                                        selectedIdPayment =
+                                                            payment.idPayment;
                                                       });
                                                     }
                                                   },
@@ -366,10 +408,12 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                                 )
                                               : Button.outlined(
                                                   width: 120.0,
-                                                  onPressed: () {
+                                                  onPressed: () async {
                                                     setState(() {
                                                       selectedPayment =
                                                           payment.namaPayment;
+                                                      selectedIdPayment =
+                                                          payment.idPayment;
                                                     });
                                                   },
                                                   label:
@@ -404,7 +448,7 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                hintText: 'Total harga',
+                                hintText: 'Total pembayaran',
                               ),
                             ),
                             const SpaceHeight(45.0),
@@ -450,10 +494,9 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                         child: ColoredBox(
                           color: AppColors.white,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16.0, horizontal: 24.0),
+                            padding: const EdgeInsets.all(16.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Flexible(
                                   child: Button.outlined(
@@ -462,14 +505,166 @@ class _ConfirmPaymentPageState extends State<ConfirmPaymentPage> {
                                     label: 'Batalkan',
                                   ),
                                 ),
-                                const SpaceWidth(8.0),
-                                Flexible(
-                                  child: Button.filled(
-                                    width: 150.0,
-                                    onPressed: () {},
-                                    label: 'Bayar',
-                                  ),
+                                const SpaceWidth(16.0),
+                                BlocBuilder<CheckoutBloc, CheckoutState>(
+                                  builder: (context, state) {
+                                    final discount = state.maybeWhen(
+                                        orElse: () => 0,
+                                        loaded: (products, discount, tax) {
+                                          if (discount == null) {
+                                            return 0;
+                                          }
+                                          return discount.diskonPersen;
+                                        });
+                                    final idDiskon = state.maybeWhen(
+                                      orElse: () {},
+                                      loaded: (items, discount, tax) =>
+                                          discount?.idDiskon,
+                                    );
+                                    final diskonPersen = state.maybeWhen(
+                                      orElse: () => 0,
+                                      loaded: (items, discount, tax) =>
+                                          discount?.diskonPersen,
+                                    );
+                                    final totalDiskon = state.maybeWhen(
+                                      orElse: () => 0,
+                                      loaded: (items, discount, tax) =>
+                                          items.fold(
+                                              0,
+                                              (previousValue, element) =>
+                                                  previousValue +
+                                                  (element.product.price!
+                                                          .toIntegerFromText *
+                                                      element.quantity)) *
+                                          diskonPersen! /
+                                          100,
+                                    );
+                                    print('id diskon :$idDiskon');
+                                    print('diskon persen : $diskonPersen');
+                                    print('total diskon : $totalDiskon');
+                                    final tax = state.maybeWhen(
+                                      orElse: () => 0,
+                                      loaded: (items, discount, tax) {
+                                        if (tax == null) {
+                                          return 0;
+                                        }
+                                        return tax.pajakPersen;
+                                      },
+                                    );
+                                    final idPajak = state.maybeWhen(
+                                      orElse: () => 0,
+                                      loaded: (items, discount, tax) =>
+                                          tax?.idPajak,
+                                    );
+                                    final pajakPersen = state.maybeWhen(
+                                      orElse: () => 0,
+                                      loaded: (items, discount, tax) =>
+                                          tax?.pajakPersen,
+                                    );
+                                    final totalPajak = state.maybeWhen(
+                                      orElse: () => 0,
+                                      loaded: (items, discount, tax) =>
+                                          items.fold(
+                                              0,
+                                              (previousValue, element) =>
+                                                  previousValue +
+                                                  (element.product.price!
+                                                          .toIntegerFromText *
+                                                      element.quantity)) *
+                                          pajakPersen! /
+                                          100,
+                                    );
+                                    print(' id pajak : $idPajak');
+                                    print('persen pajak : $pajakPersen');
+                                    print('total Pajak : $totalPajak');
+
+                                    List<ProductQuantity> items =
+                                        state.maybeWhen(
+                                      orElse: () => [],
+                                      loaded: (products, discount, tax) =>
+                                          products,
+                                    );
+
+                                    return Flexible(
+                                      child: Button.filled(
+                                        width: 150.0,
+                                        onPressed: () async {
+                                          context
+                                              .read<OrderBloc>()
+                                              .add(OrderEvent.order(
+                                                items,
+                                                idDiskon,
+                                                idPajak,
+                                                totalPriceController
+                                                    .text.toIntegerFromText,
+                                                selectedIdPayment!,
+                                                widget.selectedOption,
+                                                pajakPersen ?? 0,
+                                                diskonPersen ?? 0,
+                                                totalPajak.toInt(),
+                                                totalDiskon.toInt(),
+                                              ));
+                                          print('Total Diskon Order Bloc: $totalDiskon');
+                                          print('Total Pajak Order Bloc: $totalPajak');
+                                          await showDialog(
+                                            context: context,
+                                            barrierDismissible: false,
+                                            builder: (context) =>
+                                                // SuccessPaymentDialog(
+                                                //   paymentAmount:
+                                                //       totalPriceController
+                                                //           .text
+                                                //           .toIntegerFromText,
+                                                //   selectedPayment:
+                                                //       selectedPayment ?? '',
+                                                //   data: items,
+                                                //   totalQty: items.fold(
+                                                //       0,
+                                                //       (previousValue,
+                                                //               element) =>
+                                                //           previousValue +
+                                                //           element.quantity),
+                                                //   totalPrice:
+                                                //       paymentController
+                                                //           .subtotal,
+                                                //   totalTax: tax!,
+                                                //   totalDiscount: discount!,
+                                                //   subTotal: paymentController
+                                                //       .subtotal,
+                                                // )
+                                                SuccessPaymentDialog(
+                                              products: items,
+                                              totalQty: items.fold(
+                                                  0,
+                                                  (previousValue, element) =>
+                                                      previousValue +
+                                                      element.quantity),
+                                              totalTagihan:
+                                                  paymentController.subtotal,
+                                              totalTax: tax ?? 0,
+                                              totalDiscount: discount ?? 0,
+                                              finalTotal: items.fold(
+                                                0,
+                                                (total, element) =>
+                                                    total +
+                                                    (element.product.price!
+                                                            .toIntegerFromText *
+                                                        element.quantity),
+                                              ),
+                                              // paymentController.subtotal,
+                                              metodeBayar:
+                                                  selectedPayment ?? '',
+                                              totalBayar: totalPriceController
+                                                  .text.toIntegerFromText,
+                                            ),
+                                          );
+                                        },
+                                        label: 'Bayar',
+                                      ),
+                                    );
+                                  },
                                 ),
+                                const SpaceWidth(8.0),
                               ],
                             ),
                           ),

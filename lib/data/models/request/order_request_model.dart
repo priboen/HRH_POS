@@ -12,7 +12,7 @@ class OrderRequestModel {
     final int? paymentAmount;
     final int? returnPayment;
     final DateTime? transaksiTime;
-    final int? isSync;
+    final bool isSync;
     final List<OrderItem>? orderItems;
 
     OrderRequestModel({
@@ -27,7 +27,7 @@ class OrderRequestModel {
         this.paymentAmount,
         this.returnPayment,
         this.transaksiTime,
-        this.isSync,
+        required this.isSync,
         this.orderItems,
     });
 

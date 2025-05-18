@@ -1,4 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hrh_pos/data/datasources/auth/locals/auth_local_datasources.dart';
+import 'package:hrh_pos/data/datasources/auth/remotes/auth_remote_datasources.dart';
+import 'package:hrh_pos/data/datasources/local/database_local.dart';
+import 'package:hrh_pos/data/datasources/remotes/discount_remote_datasources.dart';
+import 'package:hrh_pos/data/datasources/remotes/order_remote_datasources_model.dart';
+import 'package:hrh_pos/data/datasources/remotes/payment_remote_datasources.dart';
+import 'package:hrh_pos/data/datasources/remotes/product_remote_datasources.dart';
+import 'package:hrh_pos/data/datasources/remotes/tax_remote_datasources.dart';
+import 'package:hrh_pos/presentation/auth/bloc/login_bloc/login_bloc.dart';
+import 'package:hrh_pos/presentation/auth/bloc/logout_bloc/logout_bloc.dart';
+import 'package:hrh_pos/presentation/auth/pages/login_page.dart';
+import 'package:hrh_pos/presentation/home/bloc/add_order/add_order_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/checkout/checkout_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/get_discount/get_discount_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/get_payment/get_payment_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/get_product/get_product_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/get_tax/get_tax_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_discount/local_discount_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_payment/local_payment_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_product/local_product_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_tax/local_tax_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/order/order_bloc.dart';
+import 'package:hrh_pos/presentation/home/pages/dashboard_page.dart';
+import 'package:hrh_pos/presentation/report/bloc/item_sales/item_sales_bloc.dart';
+import 'package:hrh_pos/presentation/report/bloc/transaction_report/transaction_report_bloc.dart';
+import 'package:hrh_pos/presentation/settings/bloc/sync_all_data/sync_all_data_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,119 +34,112 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginBloc(AuthRemoteDatasources()),
+        ),
+        BlocProvider(
+          create: (context) => LogoutBloc(AuthRemoteDatasources()),
+        ),
+        BlocProvider(
+          create: (context) => GetProductBloc(ProductRemoteDatasources()),
+        ),
+        BlocProvider(
+          create: (context) => CheckoutBloc(),
+        ),
+        BlocProvider(
+          create: (context) => GetDiscountBloc(DiscountRemoteDatasources()),
+        ),
+        BlocProvider(
+          create: (context) => GetTaxBloc(TaxRemoteDatasources()),
+        ),
+        BlocProvider(
+          create: (context) => GetPaymentBloc(PaymentRemoteDatasources()),
+        ),
+        BlocProvider(
+          create: (context) => AddOrderBloc(OrderRemoteDatasourcesModel()),
+        ),
+        // BlocProvider(
+        //   create: (context) => OrderBloc(OrderRemoteDatasourcesModel()),
+        // ),
+        BlocProvider(
+          create: (context) => OrderBloc(),
+        ),
+        BlocProvider(
+          create: (context) => LocalProductBloc(
+            DatabaseLocal.instance,
+          ),
+        ),
+        BlocProvider(
+          create: (context) => LocalDiscountBloc(
+            DatabaseLocal.instance,
+          ),
+        ),
+        BlocProvider(
+          create: (context) => LocalTaxBloc(
+            DatabaseLocal.instance,
+          ),
+        ),
+        BlocProvider(
+          create: (context) => LocalPaymentBloc(
+            DatabaseLocal.instance,
+          ),
+        ),
+        BlocProvider(
+          create: (context) => TransactionReportBloc(
+            DatabaseLocal.instance,
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ItemSalesBloc(
+            DatabaseLocal.instance,
+          ),
+        ),
+        BlocProvider(
+          create: (context) => SyncAllDataBloc(
+            productDatasource: ProductRemoteDatasources(),
+            taxDatasource: TaxRemoteDatasources(),
+            discountDatasource: DiscountRemoteDatasources(),
+            paymentDatasource: PaymentRemoteDatasources(),
+            databaseLocal: DatabaseLocal.instance,
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: FutureBuilder<bool>(
+          future: AuthLocalDatasources().isUserLoggedIn(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            if (snapshot.hasData) {
+              if (snapshot.data!) {
+                return const DashboardPage();
+              } else {
+                return const LoginPage();
+              }
+            }
+            return const Scaffold(
+              body: Center(
+                child: Text('Error'),
+              ),
+            );
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

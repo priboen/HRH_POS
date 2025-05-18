@@ -5,6 +5,7 @@ import 'package:hrh_pos/core/core.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
 import 'package:hrh_pos/presentation/home/bloc/checkout/checkout_bloc.dart';
 import 'package:hrh_pos/presentation/home/bloc/get_tax/get_tax_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_tax/local_tax_bloc.dart';
 
 class TaxDialog extends StatefulWidget {
   const TaxDialog({super.key});
@@ -16,7 +17,7 @@ class TaxDialog extends StatefulWidget {
 class _TaxDialogState extends State<TaxDialog> {
     @override
   void initState() {
-    context.read<GetTaxBloc>().add(const GetTaxEvent.getTax());
+    context.read<LocalTaxBloc>().add(const LocalTaxEvent.getTaxes());
     super.initState();
   }
 
@@ -28,7 +29,7 @@ class _TaxDialogState extends State<TaxDialog> {
         alignment: Alignment.center,
         children: [
           const Text(
-            'DISKON',
+            'PAJAK',
             style: TextStyle(
               color: AppColors.primary,
               fontSize: 28,
@@ -50,7 +51,7 @@ class _TaxDialogState extends State<TaxDialog> {
           ),
         ],
       ),
-      content: BlocBuilder<GetTaxBloc, GetTaxState>(
+      content: BlocBuilder<LocalTaxBloc, LocalTaxState>(
         builder: (context, state) {
           return state.maybeWhen(
             orElse: () => const SizedBox.shrink(),

@@ -6,6 +6,8 @@ import 'package:hrh_pos/presentation/auth/bloc/logout_bloc/logout_bloc.dart';
 import 'package:hrh_pos/presentation/auth/pages/login_page.dart';
 import 'package:hrh_pos/presentation/home/pages/discount_page.dart';
 import 'package:hrh_pos/presentation/home/pages/home_page.dart';
+import 'package:hrh_pos/presentation/report/pages/report_page.dart';
+import 'package:hrh_pos/presentation/settings/pages/settings_page.dart';
 import 'package:hrh_pos/presentation/widgets/nav_item.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -20,11 +22,8 @@ class _DashboardPageState extends State<DashboardPage> {
   final List<Widget> _pages = [
     const HomePage(),
     const DiscountPage(),
-    // const ReportPage(),
-    const Center(child: Text('This is page 3')),
-    const Center(child: Text('This is page 4')),
-    // const SettingsPage(),
-    // const ManagePrinterPage(),
+    const ReportPage(),
+    const SettingsPage(),
     // const SettingsPage(),
   ];
 

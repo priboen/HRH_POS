@@ -3,6 +3,16 @@ part of 'order_bloc.dart';
 @freezed
 class OrderEvent with _$OrderEvent {
   const factory OrderEvent.started() = _Started;
-  const factory OrderEvent.order(List<ProductQuantity> items, int discount,
-      int tax,  int paymentAmount, int paymentMethod, String layananMethod) = _Order;
+  const factory OrderEvent.order(
+    List<ProductQuantity> items,
+    int? discount,
+    int? tax,
+    int paymentAmount,
+    int paymentMethod,
+    String layananMethod,
+    int pajakPersen,
+    int diskonPersen,
+    int totalPajak,
+    int totalDiskon,
+  ) = _Order;
 }

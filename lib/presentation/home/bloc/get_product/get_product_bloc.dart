@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hrh_pos/data/datasources/products/remotes/product_remote_datasources.dart';
+import 'package:hrh_pos/data/datasources/remotes/product_remote_datasources.dart';
 import 'package:hrh_pos/data/models/response/product_response_model.dart';
 
 part 'get_product_event.dart';
@@ -10,6 +10,7 @@ part 'get_product_bloc.freezed.dart';
 class GetProductBloc extends Bloc<GetProductEvent, GetProductState> {
   final ProductRemoteDatasources datasources;
   GetProductBloc(this.datasources) : super(const _Initial()) {
+
     on<_GetProduct>(
       (event, emit) async {
         emit(const _Loading());
@@ -34,8 +35,8 @@ class GetProductBloc extends Bloc<GetProductEvent, GetProductState> {
     });
   }
 
-  List<Category> extractCategoriesFromProducts(List<Product> products) {
-    final uniqueCategories = <Category>{};
+  List<ProductCategory> extractCategoriesFromProducts(List<Product> products) {
+    final uniqueCategories = <ProductCategory>{};
     for (var product in products) {
       if (product.category != null) {
         uniqueCategories.add(product.category!);

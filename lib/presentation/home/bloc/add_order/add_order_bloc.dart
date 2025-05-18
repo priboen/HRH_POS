@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hrh_pos/core/extensions/string_ext.dart';
-import 'package:hrh_pos/data/datasources/auth/locals/auth_local_datasources.dart';
-import 'package:hrh_pos/data/datasources/products/remotes/order_remote_datasources_model.dart';
+import 'package:hrh_pos/data/datasources/remotes/order_remote_datasources_model.dart';
 import 'package:hrh_pos/data/models/request/order_request_model.dart';
 import 'package:hrh_pos/presentation/home/models/product_quantity.dart';
 

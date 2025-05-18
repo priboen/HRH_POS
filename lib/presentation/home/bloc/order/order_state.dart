@@ -4,6 +4,7 @@ part of 'order_bloc.dart';
 class OrderState with _$OrderState {
   const factory OrderState.initial() = _Initial;
   const factory OrderState.loading() = _Loading;
-  const factory OrderState.loaded(OrderRequestModel orderRequestModel) = _Loaded;
+  // const factory OrderState.loaded(OrderRequestModel orderRequestModel) = _Loaded;
+  const factory OrderState.loaded(OrderModel orderModel) = _Loaded;
   const factory OrderState.error(String message) = _Error;
 }

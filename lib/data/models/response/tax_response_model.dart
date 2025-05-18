@@ -1,65 +1,111 @@
 import 'dart:convert';
 
 class TaxResponseModel {
-    final int? status;
-    final Tax? data;
-    final String? message;
+  final int? status;
+  final Tax? data;
+  final String? message;
 
-    TaxResponseModel({
-        this.status,
-        this.data,
-        this.message,
-    });
+  TaxResponseModel({
+    this.status,
+    this.data,
+    this.message,
+  });
 
-    factory TaxResponseModel.fromJson(String str) => TaxResponseModel.fromMap(json.decode(str));
+  factory TaxResponseModel.fromJson(String str) =>
+      TaxResponseModel.fromMap(json.decode(str));
 
-    String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap());
 
-    factory TaxResponseModel.fromMap(Map<String, dynamic> json) => TaxResponseModel(
+  factory TaxResponseModel.fromMap(Map<String, dynamic> json) =>
+      TaxResponseModel(
         status: json["status"],
         data: json["data"] == null ? null : Tax.fromMap(json["data"]),
         message: json["message"],
-    );
+      );
 
-    Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() => {
         "status": status,
         "data": data?.toMap(),
         "message": message,
-    };
+      };
 }
 
 class Tax {
-    final String? namaPajak;
-    final int? pajakPersen;
-    final DateTime? updatedAt;
-    final DateTime? createdAt;
-    final int? idPajak;
+  final String? namaPajak;
+  final int? pajakPersen;
+  final DateTime? updatedAt;
+  final DateTime? createdAt;
+  final int? idPajak;
 
-    Tax({
-        this.namaPajak,
-        this.pajakPersen,
-        this.updatedAt,
-        this.createdAt,
-        this.idPajak,
-    });
+  Tax({
+    this.namaPajak,
+    this.pajakPersen,
+    this.updatedAt,
+    this.createdAt,
+    this.idPajak,
+  });
 
-    factory Tax.fromJson(String str) => Tax.fromMap(json.decode(str));
+  factory Tax.fromJson(String str) => Tax.fromMap(json.decode(str));
 
-    String toJson() => json.encode(toMap());
+  String toJson() => json.encode(toMap());
 
-    factory Tax.fromMap(Map<String, dynamic> json) => Tax(
+  factory Tax.fromMap(Map<String, dynamic> json) => Tax(
         namaPajak: json["nama_pajak"],
         pajakPersen: json["pajak_persen"],
-        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
-        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
         idPajak: json["id_pajak"],
-    );
+      );
 
-    Map<String, dynamic> toMap() => {
+  factory Tax.fromLocalMap(Map<String, dynamic> json) => Tax(
+        idPajak: json["id_pajak"],
+        namaPajak: json["nama_pajak"],
+        pajakPersen: json["pajak_persen"],
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+      );
+
+  Map<String, dynamic> toLocalMap() => {
+        "id_pajak": idPajak,
+        "nama_pajak": namaPajak,
+        "pajak_persen": pajakPersen,
+        "updated_at": updatedAt?.toIso8601String(),
+        "created_at": createdAt?.toIso8601String(),
+      };
+
+  Map<String, dynamic> toMap() => {
         "nama_pajak": namaPajak,
         "pajak_persen": pajakPersen,
         "updated_at": updatedAt?.toIso8601String(),
         "created_at": createdAt?.toIso8601String(),
         "id_pajak": idPajak,
-    };
+      };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Tax &&
+        other.idPajak == idPajak &&
+        other.namaPajak == namaPajak &&
+        other.pajakPersen == pajakPersen &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
+  }
+
+  @override
+  int get hashCode {
+    return idPajak.hashCode ^
+        namaPajak.hashCode ^
+        pajakPersen.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
+  }
 }

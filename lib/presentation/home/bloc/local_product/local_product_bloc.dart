@@ -1,16 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hrh_pos/data/datasources/products/local/product_local_datasources.dart';
+import 'package:hrh_pos/data/datasources/local/database_local.dart';
 import 'package:hrh_pos/data/models/response/product_response_model.dart';
-import 'package:hrh_pos/presentation/home/models/category_model.dart';
-import 'package:hrh_pos/presentation/home/models/product_model.dart';
 
 part 'local_product_event.dart';
 part 'local_product_state.dart';
 part 'local_product_bloc.freezed.dart';
 
 class LocalProductBloc extends Bloc<LocalProductEvent, LocalProductState> {
-  final ProductLocalDatasources datasources;
+  final DatabaseLocal datasources;
   LocalProductBloc(this.datasources) : super(const _Initial()) {
     on<_GetProducts>((event, emit) async {
       emit(const _Loading());

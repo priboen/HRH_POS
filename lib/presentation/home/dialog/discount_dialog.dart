@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hrh_pos/core/constants/colors.dart';
 import 'package:hrh_pos/core/extensions/extensions.dart';
 import 'package:hrh_pos/presentation/home/bloc/checkout/checkout_bloc.dart';
-import 'package:hrh_pos/presentation/home/bloc/get_discount/get_discount_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_discount/local_discount_bloc.dart';
 
 class DiscountDialog extends StatefulWidget {
   const DiscountDialog({super.key});
@@ -16,7 +16,9 @@ class DiscountDialog extends StatefulWidget {
 class _DiscountDialogState extends State<DiscountDialog> {
   @override
   void initState() {
-    context.read<GetDiscountBloc>().add(const GetDiscountEvent.getDiscount());
+    context
+        .read<LocalDiscountBloc>()
+        .add(const LocalDiscountEvent.getDiscounts());
     super.initState();
   }
 
@@ -50,7 +52,7 @@ class _DiscountDialogState extends State<DiscountDialog> {
           ),
         ],
       ),
-      content: BlocBuilder<GetDiscountBloc, GetDiscountState>(
+      content: BlocBuilder<LocalDiscountBloc, LocalDiscountState>(
         builder: (context, state) {
           return state.maybeWhen(
             orElse: () => const SizedBox.shrink(),
@@ -58,14 +60,32 @@ class _DiscountDialogState extends State<DiscountDialog> {
               child: CircularProgressIndicator(),
             ),
             loaded: (discounts) {
+              final now = DateTime.now();
+              final activeDiscounts = discounts.where((discount) {
+                final isActive = discount.tanggalMulai != null &&
+                    discount.tanggalSelesai != null &&
+                    now.isAfter(discount.tanggalMulai!) &&
+                    now.isBefore(discount.tanggalSelesai!);
+                return isActive;
+              }).toList();
+
+              if (activeDiscounts.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'Tidak ada diskon aktif saat ini.',
+                    style: TextStyle(color: AppColors.primary),
+                  ),
+                );
+              }
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: discounts
+                children: activeDiscounts
                     .map(
                       (discount) => ListTile(
                         title: Text('Nama Diskon: ${discount.namaDiskon}'),
-                        subtitle: Text('Potongan harga (${discount.diskonPersen}%)'),
+                        subtitle:
+                            Text('Potongan harga (${discount.diskonPersen}%)'),
                         contentPadding: EdgeInsets.zero,
                         textColor: AppColors.primary,
                         trailing: Checkbox(

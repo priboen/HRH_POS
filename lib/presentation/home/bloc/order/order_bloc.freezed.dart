@@ -19,24 +19,51 @@ mixin _$OrderEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(List<ProductQuantity> items, int discount,
-            int tax, int paymentAmount, int paymentMethod, String layananMethod)
+    required TResult Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)
         order,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(List<ProductQuantity> items, int discount, int tax,
-            int paymentAmount, int paymentMethod, String layananMethod)?
+    TResult? Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)?
         order,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(List<ProductQuantity> items, int discount, int tax,
-            int paymentAmount, int paymentMethod, String layananMethod)?
+    TResult Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)?
         order,
     required TResult orElse(),
   }) =>
@@ -125,8 +152,17 @@ class _$StartedImpl implements _Started {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(List<ProductQuantity> items, int discount,
-            int tax, int paymentAmount, int paymentMethod, String layananMethod)
+    required TResult Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)
         order,
   }) {
     return started();
@@ -136,8 +172,17 @@ class _$StartedImpl implements _Started {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(List<ProductQuantity> items, int discount, int tax,
-            int paymentAmount, int paymentMethod, String layananMethod)?
+    TResult? Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)?
         order,
   }) {
     return started?.call();
@@ -147,8 +192,17 @@ class _$StartedImpl implements _Started {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(List<ProductQuantity> items, int discount, int tax,
-            int paymentAmount, int paymentMethod, String layananMethod)?
+    TResult Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)?
         order,
     required TResult orElse(),
   }) {
@@ -202,11 +256,15 @@ abstract class _$$OrderImplCopyWith<$Res> {
   @useResult
   $Res call(
       {List<ProductQuantity> items,
-      int discount,
-      int tax,
+      int? discount,
+      int? tax,
       int paymentAmount,
       int paymentMethod,
-      String layananMethod});
+      String layananMethod,
+      int pajakPersen,
+      int diskonPersen,
+      int totalPajak,
+      int totalDiskon});
 }
 
 /// @nodoc
@@ -223,25 +281,29 @@ class __$$OrderImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? items = null,
-    Object? discount = null,
-    Object? tax = null,
+    Object? discount = freezed,
+    Object? tax = freezed,
     Object? paymentAmount = null,
     Object? paymentMethod = null,
     Object? layananMethod = null,
+    Object? pajakPersen = null,
+    Object? diskonPersen = null,
+    Object? totalPajak = null,
+    Object? totalDiskon = null,
   }) {
     return _then(_$OrderImpl(
       null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<ProductQuantity>,
-      null == discount
+      freezed == discount
           ? _value.discount
           : discount // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == tax
+              as int?,
+      freezed == tax
           ? _value.tax
           : tax // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       null == paymentAmount
           ? _value.paymentAmount
           : paymentAmount // ignore: cast_nullable_to_non_nullable
@@ -254,6 +316,22 @@ class __$$OrderImplCopyWithImpl<$Res>
           ? _value.layananMethod
           : layananMethod // ignore: cast_nullable_to_non_nullable
               as String,
+      null == pajakPersen
+          ? _value.pajakPersen
+          : pajakPersen // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == diskonPersen
+          ? _value.diskonPersen
+          : diskonPersen // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == totalPajak
+          ? _value.totalPajak
+          : totalPajak // ignore: cast_nullable_to_non_nullable
+              as int,
+      null == totalDiskon
+          ? _value.totalDiskon
+          : totalDiskon // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -261,8 +339,17 @@ class __$$OrderImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OrderImpl implements _Order {
-  const _$OrderImpl(final List<ProductQuantity> items, this.discount, this.tax,
-      this.paymentAmount, this.paymentMethod, this.layananMethod)
+  const _$OrderImpl(
+      final List<ProductQuantity> items,
+      this.discount,
+      this.tax,
+      this.paymentAmount,
+      this.paymentMethod,
+      this.layananMethod,
+      this.pajakPersen,
+      this.diskonPersen,
+      this.totalPajak,
+      this.totalDiskon)
       : _items = items;
 
   final List<ProductQuantity> _items;
@@ -274,19 +361,27 @@ class _$OrderImpl implements _Order {
   }
 
   @override
-  final int discount;
+  final int? discount;
   @override
-  final int tax;
+  final int? tax;
   @override
   final int paymentAmount;
   @override
   final int paymentMethod;
   @override
   final String layananMethod;
+  @override
+  final int pajakPersen;
+  @override
+  final int diskonPersen;
+  @override
+  final int totalPajak;
+  @override
+  final int totalDiskon;
 
   @override
   String toString() {
-    return 'OrderEvent.order(items: $items, discount: $discount, tax: $tax, paymentAmount: $paymentAmount, paymentMethod: $paymentMethod, layananMethod: $layananMethod)';
+    return 'OrderEvent.order(items: $items, discount: $discount, tax: $tax, paymentAmount: $paymentAmount, paymentMethod: $paymentMethod, layananMethod: $layananMethod, pajakPersen: $pajakPersen, diskonPersen: $diskonPersen, totalPajak: $totalPajak, totalDiskon: $totalDiskon)';
   }
 
   @override
@@ -303,7 +398,15 @@ class _$OrderImpl implements _Order {
             (identical(other.paymentMethod, paymentMethod) ||
                 other.paymentMethod == paymentMethod) &&
             (identical(other.layananMethod, layananMethod) ||
-                other.layananMethod == layananMethod));
+                other.layananMethod == layananMethod) &&
+            (identical(other.pajakPersen, pajakPersen) ||
+                other.pajakPersen == pajakPersen) &&
+            (identical(other.diskonPersen, diskonPersen) ||
+                other.diskonPersen == diskonPersen) &&
+            (identical(other.totalPajak, totalPajak) ||
+                other.totalPajak == totalPajak) &&
+            (identical(other.totalDiskon, totalDiskon) ||
+                other.totalDiskon == totalDiskon));
   }
 
   @override
@@ -314,7 +417,11 @@ class _$OrderImpl implements _Order {
       tax,
       paymentAmount,
       paymentMethod,
-      layananMethod);
+      layananMethod,
+      pajakPersen,
+      diskonPersen,
+      totalPajak,
+      totalDiskon);
 
   /// Create a copy of OrderEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -328,38 +435,65 @@ class _$OrderImpl implements _Order {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() started,
-    required TResult Function(List<ProductQuantity> items, int discount,
-            int tax, int paymentAmount, int paymentMethod, String layananMethod)
+    required TResult Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)
         order,
   }) {
-    return order(
-        items, discount, tax, paymentAmount, paymentMethod, layananMethod);
+    return order(items, discount, tax, paymentAmount, paymentMethod,
+        layananMethod, pajakPersen, diskonPersen, totalPajak, totalDiskon);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
-    TResult? Function(List<ProductQuantity> items, int discount, int tax,
-            int paymentAmount, int paymentMethod, String layananMethod)?
+    TResult? Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)?
         order,
   }) {
-    return order?.call(
-        items, discount, tax, paymentAmount, paymentMethod, layananMethod);
+    return order?.call(items, discount, tax, paymentAmount, paymentMethod,
+        layananMethod, pajakPersen, diskonPersen, totalPajak, totalDiskon);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
-    TResult Function(List<ProductQuantity> items, int discount, int tax,
-            int paymentAmount, int paymentMethod, String layananMethod)?
+    TResult Function(
+            List<ProductQuantity> items,
+            int? discount,
+            int? tax,
+            int paymentAmount,
+            int paymentMethod,
+            String layananMethod,
+            int pajakPersen,
+            int diskonPersen,
+            int totalPajak,
+            int totalDiskon)?
         order,
     required TResult orElse(),
   }) {
     if (order != null) {
-      return order(
-          items, discount, tax, paymentAmount, paymentMethod, layananMethod);
+      return order(items, discount, tax, paymentAmount, paymentMethod,
+          layananMethod, pajakPersen, diskonPersen, totalPajak, totalDiskon);
     }
     return orElse();
   }
@@ -399,18 +533,26 @@ class _$OrderImpl implements _Order {
 abstract class _Order implements OrderEvent {
   const factory _Order(
       final List<ProductQuantity> items,
-      final int discount,
-      final int tax,
+      final int? discount,
+      final int? tax,
       final int paymentAmount,
       final int paymentMethod,
-      final String layananMethod) = _$OrderImpl;
+      final String layananMethod,
+      final int pajakPersen,
+      final int diskonPersen,
+      final int totalPajak,
+      final int totalDiskon) = _$OrderImpl;
 
   List<ProductQuantity> get items;
-  int get discount;
-  int get tax;
+  int? get discount;
+  int? get tax;
   int get paymentAmount;
   int get paymentMethod;
   String get layananMethod;
+  int get pajakPersen;
+  int get diskonPersen;
+  int get totalPajak;
+  int get totalDiskon;
 
   /// Create a copy of OrderEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -425,7 +567,7 @@ mixin _$OrderState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(OrderRequestModel orderRequestModel) loaded,
+    required TResult Function(OrderModel orderModel) loaded,
     required TResult Function(String message) error,
   }) =>
       throw _privateConstructorUsedError;
@@ -433,7 +575,7 @@ mixin _$OrderState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult? Function(OrderModel orderModel)? loaded,
     TResult? Function(String message)? error,
   }) =>
       throw _privateConstructorUsedError;
@@ -441,7 +583,7 @@ mixin _$OrderState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult Function(OrderModel orderModel)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) =>
@@ -537,7 +679,7 @@ class _$InitialImpl implements _Initial {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(OrderRequestModel orderRequestModel) loaded,
+    required TResult Function(OrderModel orderModel) loaded,
     required TResult Function(String message) error,
   }) {
     return initial();
@@ -548,7 +690,7 @@ class _$InitialImpl implements _Initial {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult? Function(OrderModel orderModel)? loaded,
     TResult? Function(String message)? error,
   }) {
     return initial?.call();
@@ -559,7 +701,7 @@ class _$InitialImpl implements _Initial {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult Function(OrderModel orderModel)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -654,7 +796,7 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(OrderRequestModel orderRequestModel) loaded,
+    required TResult Function(OrderModel orderModel) loaded,
     required TResult Function(String message) error,
   }) {
     return loading();
@@ -665,7 +807,7 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult? Function(OrderModel orderModel)? loaded,
     TResult? Function(String message)? error,
   }) {
     return loading?.call();
@@ -676,7 +818,7 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult Function(OrderModel orderModel)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
@@ -734,7 +876,7 @@ abstract class _$$LoadedImplCopyWith<$Res> {
           _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
       __$$LoadedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({OrderRequestModel orderRequestModel});
+  $Res call({OrderModel orderModel});
 }
 
 /// @nodoc
@@ -750,13 +892,13 @@ class __$$LoadedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? orderRequestModel = null,
+    Object? orderModel = null,
   }) {
     return _then(_$LoadedImpl(
-      null == orderRequestModel
-          ? _value.orderRequestModel
-          : orderRequestModel // ignore: cast_nullable_to_non_nullable
-              as OrderRequestModel,
+      null == orderModel
+          ? _value.orderModel
+          : orderModel // ignore: cast_nullable_to_non_nullable
+              as OrderModel,
     ));
   }
 }
@@ -764,14 +906,14 @@ class __$$LoadedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$LoadedImpl implements _Loaded {
-  const _$LoadedImpl(this.orderRequestModel);
+  const _$LoadedImpl(this.orderModel);
 
   @override
-  final OrderRequestModel orderRequestModel;
+  final OrderModel orderModel;
 
   @override
   String toString() {
-    return 'OrderState.loaded(orderRequestModel: $orderRequestModel)';
+    return 'OrderState.loaded(orderModel: $orderModel)';
   }
 
   @override
@@ -779,12 +921,12 @@ class _$LoadedImpl implements _Loaded {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedImpl &&
-            (identical(other.orderRequestModel, orderRequestModel) ||
-                other.orderRequestModel == orderRequestModel));
+            (identical(other.orderModel, orderModel) ||
+                other.orderModel == orderModel));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, orderRequestModel);
+  int get hashCode => Object.hash(runtimeType, orderModel);
 
   /// Create a copy of OrderState
   /// with the given fields replaced by the non-null parameter values.
@@ -799,10 +941,10 @@ class _$LoadedImpl implements _Loaded {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(OrderRequestModel orderRequestModel) loaded,
+    required TResult Function(OrderModel orderModel) loaded,
     required TResult Function(String message) error,
   }) {
-    return loaded(orderRequestModel);
+    return loaded(orderModel);
   }
 
   @override
@@ -810,10 +952,10 @@ class _$LoadedImpl implements _Loaded {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult? Function(OrderModel orderModel)? loaded,
     TResult? Function(String message)? error,
   }) {
-    return loaded?.call(orderRequestModel);
+    return loaded?.call(orderModel);
   }
 
   @override
@@ -821,12 +963,12 @@ class _$LoadedImpl implements _Loaded {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult Function(OrderModel orderModel)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(orderRequestModel);
+      return loaded(orderModel);
     }
     return orElse();
   }
@@ -870,10 +1012,9 @@ class _$LoadedImpl implements _Loaded {
 }
 
 abstract class _Loaded implements OrderState {
-  const factory _Loaded(final OrderRequestModel orderRequestModel) =
-      _$LoadedImpl;
+  const factory _Loaded(final OrderModel orderModel) = _$LoadedImpl;
 
-  OrderRequestModel get orderRequestModel;
+  OrderModel get orderModel;
 
   /// Create a copy of OrderState
   /// with the given fields replaced by the non-null parameter values.
@@ -952,7 +1093,7 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function() loading,
-    required TResult Function(OrderRequestModel orderRequestModel) loaded,
+    required TResult Function(OrderModel orderModel) loaded,
     required TResult Function(String message) error,
   }) {
     return error(message);
@@ -963,7 +1104,7 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
-    TResult? Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult? Function(OrderModel orderModel)? loaded,
     TResult? Function(String message)? error,
   }) {
     return error?.call(message);
@@ -974,7 +1115,7 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
-    TResult Function(OrderRequestModel orderRequestModel)? loaded,
+    TResult Function(OrderModel orderModel)? loaded,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {

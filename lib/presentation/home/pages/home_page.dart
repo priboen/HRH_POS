@@ -6,6 +6,7 @@ import 'package:hrh_pos/core/extensions/int_ext.dart';
 import 'package:hrh_pos/core/extensions/string_ext.dart';
 import 'package:hrh_pos/presentation/home/bloc/checkout/checkout_bloc.dart';
 import 'package:hrh_pos/presentation/home/bloc/get_product/get_product_bloc.dart';
+import 'package:hrh_pos/presentation/home/bloc/local_product/local_product_bloc.dart';
 import 'package:hrh_pos/presentation/home/dialog/discount_dialog.dart';
 import 'package:hrh_pos/presentation/home/dialog/tax_dialog.dart';
 import 'package:hrh_pos/presentation/home/pages/confirm_payment_page.dart';
@@ -28,7 +29,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    context.read<GetProductBloc>().add(const GetProductEvent.getProduct());
+    // context.read<GetProductBloc>().add(const GetProductEvent.getProduct());
+    context.read<LocalProductBloc>().add(const LocalProductEvent.getProducts());
     super.initState();
   }
 
@@ -51,9 +53,129 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         HomeTitle(
                           controller: searchController,
+                          onChanged: (value) {
+                            // context
+                            //     .read<GetProductBloc>()
+                            //     .add(GetProductEvent.searchProduct(value));
+                            context
+                                .read<LocalProductBloc>()
+                                .add(LocalProductEvent.searchProduct(value));
+                          },
                         ),
                         const SizedBox(height: 24),
-                        BlocBuilder<GetProductBloc, GetProductState>(
+                        // BlocBuilder<GetProductBloc, GetProductState>(
+                        //   builder: (context, state) {
+                        //     return state.when(
+                        //       initial: () => const Center(
+                        //           child: CircularProgressIndicator()),
+                        //       loading: () => const Center(
+                        //           child: CircularProgressIndicator()),
+                        //       loaded: (products) {
+                        //         // Filter produk berdasarkan pencarian
+                        //         final filteredProducts = searchController
+                        //                 .text.isEmpty
+                        //             ? products
+                        //             : products
+                        //                 .where((product) => product.nameProduct!
+                        //                     .toLowerCase()
+                        //                     .contains(searchController.text
+                        //                         .toLowerCase()))
+                        //                 .toList();
+
+                        //         // Ekstraksi kategori
+                        //         final categories = context
+                        //             .read<GetProductBloc>()
+                        //             .extractCategoriesFromProducts(products)
+                        //             .map((category) => category.name)
+                        //             .where((name) => name != null)
+                        //             .toSet()
+                        //             .toList();
+
+                        //         // Tambahkan kategori ke tab
+                        //         final tabTitles = ['Semua', ...categories];
+
+                        //         return CustomTabBar(
+                        //           tabTitles:
+                        //               tabTitles.whereType<String>().toList(),
+                        //           initialTabIndex: 0,
+                        //           tabViews: List.generate(
+                        //             tabTitles.length,
+                        //             (index) {
+                        //               if (index == 0) {
+                        //                 // Menampilkan produk hasil pencarian di tab "Semua"
+                        //                 return filteredProducts.isEmpty
+                        //                     ? const Center(
+                        //                         child: Text(
+                        //                             'Produk tidak ditemukan'))
+                        //                     : GridView.builder(
+                        //                         shrinkWrap: true,
+                        //                         physics:
+                        //                             const NeverScrollableScrollPhysics(),
+                        //                         gridDelegate:
+                        //                             const SliverGridDelegateWithFixedCrossAxisCount(
+                        //                           childAspectRatio: 0.85,
+                        //                           crossAxisCount: 3,
+                        //                           crossAxisSpacing: 30.0,
+                        //                           mainAxisSpacing: 30.0,
+                        //                         ),
+                        //                         itemCount:
+                        //                             filteredProducts.length,
+                        //                         itemBuilder: (context, index) {
+                        //                           return ProductCard(
+                        //                               data: filteredProducts[
+                        //                                   index]);
+                        //                         },
+                        //                       );
+                        //               } else {
+                        //                 final categoryProducts =
+                        //                     filteredProducts
+                        //                         .where((product) =>
+                        //                             product.category?.name ==
+                        //                             tabTitles[index])
+                        //                         .toList();
+
+                        //                 return categoryProducts.isEmpty
+                        //                     ? const Center(
+                        //                         child: Text('Data Kosong'))
+                        //                     : GridView.builder(
+                        //                         shrinkWrap: true,
+                        //                         physics:
+                        //                             const NeverScrollableScrollPhysics(),
+                        //                         gridDelegate:
+                        //                             const SliverGridDelegateWithFixedCrossAxisCount(
+                        //                           childAspectRatio: 0.85,
+                        //                           crossAxisCount: 3,
+                        //                           crossAxisSpacing: 30.0,
+                        //                           mainAxisSpacing: 30.0,
+                        //                         ),
+                        //                         itemCount:
+                        //                             categoryProducts.length,
+                        //                         itemBuilder: (context, index) {
+                        //                           return ProductCard(
+                        //                               data: categoryProducts[
+                        //                                   index]);
+                        //                         },
+                        //                       );
+                        //               }
+                        //             },
+                        //           ),
+                        //         );
+                        //       },
+                        //       error: (e) {
+                        //         WidgetsBinding.instance.addPostFrameCallback(
+                        //           (_) {
+                        //             ScaffoldMessenger.of(context).showSnackBar(
+                        //               SnackBar(content: Text(e)),
+                        //             );
+                        //           },
+                        //         );
+                        //         return const Center(
+                        //             child: Text('Terjadi Kesalahan'));
+                        //       },
+                        //     );
+                        //   },
+                        // )
+                        BlocBuilder<LocalProductBloc, LocalProductState>(
                           builder: (context, state) {
                             return state.when(
                               initial: () => const Center(
@@ -61,6 +183,18 @@ class _HomePageState extends State<HomePage> {
                               loading: () => const Center(
                                   child: CircularProgressIndicator()),
                               loaded: (products) {
+                                // Filter produk berdasarkan pencarian
+                                final filteredProducts = searchController
+                                        .text.isEmpty
+                                    ? products
+                                    : products
+                                        .where((product) => product.nameProduct!
+                                            .toLowerCase()
+                                            .contains(searchController.text
+                                                .toLowerCase()))
+                                        .toList();
+
+                                // Ekstraksi kategori
                                 final categories = context
                                     .read<GetProductBloc>()
                                     .extractCategoriesFromProducts(products)
@@ -68,7 +202,10 @@ class _HomePageState extends State<HomePage> {
                                     .where((name) => name != null)
                                     .toSet()
                                     .toList();
+
+                                // Tambahkan kategori ke tab
                                 final tabTitles = ['Semua', ...categories];
+
                                 return CustomTabBar(
                                   tabTitles:
                                       tabTitles.whereType<String>().toList(),
@@ -77,33 +214,15 @@ class _HomePageState extends State<HomePage> {
                                     tabTitles.length,
                                     (index) {
                                       if (index == 0) {
-                                        return GridView.builder(
-                                          shrinkWrap: true,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            childAspectRatio: 0.85,
-                                            crossAxisCount: 3,
-                                            crossAxisSpacing: 30.0,
-                                            mainAxisSpacing: 30.0,
-                                          ),
-                                          itemCount: products.length,
-                                          itemBuilder: (context, index) {
-                                            return ProductCard(
-                                                data: products[index]);
-                                          },
-                                        );
-                                      } else {
-                                        final filteredProducts = products
-                                            .where((product) =>
-                                                product.category?.name ==
-                                                tabTitles[index])
-                                            .toList();
-
+                                        // Menampilkan produk hasil pencarian di tab "Semua"
                                         return filteredProducts.isEmpty
                                             ? const Center(
-                                                child: Text('Data Kosong'))
+                                                child: Text(
+                                                    'Produk tidak ditemukan'))
                                             : GridView.builder(
                                                 shrinkWrap: true,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
                                                 gridDelegate:
                                                     const SliverGridDelegateWithFixedCrossAxisCount(
                                                   childAspectRatio: 0.85,
@@ -115,8 +234,38 @@ class _HomePageState extends State<HomePage> {
                                                     filteredProducts.length,
                                                 itemBuilder: (context, index) {
                                                   return ProductCard(
+                                                      data: filteredProducts[
+                                                          index]);
+                                                },
+                                              );
+                                      } else {
+                                        final categoryProducts =
+                                            filteredProducts
+                                                .where((product) =>
+                                                    product.category?.name ==
+                                                    tabTitles[index])
+                                                .toList();
+
+                                        return categoryProducts.isEmpty
+                                            ? const Center(
+                                                child: Text('Data Kosong'))
+                                            : GridView.builder(
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                gridDelegate:
+                                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                                  childAspectRatio: 0.85,
+                                                  crossAxisCount: 3,
+                                                  crossAxisSpacing: 30.0,
+                                                  mainAxisSpacing: 30.0,
+                                                ),
+                                                itemCount:
+                                                    categoryProducts.length,
+                                                itemBuilder: (context, index) {
+                                                  return ProductCard(
                                                     data:
-                                                        filteredProducts[index],
+                                                        categoryProducts[index],
                                                   );
                                                 },
                                               );
@@ -129,15 +278,12 @@ class _HomePageState extends State<HomePage> {
                                 WidgetsBinding.instance.addPostFrameCallback(
                                   (_) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(e),
-                                      ),
+                                      SnackBar(content: Text(e)),
                                     );
                                   },
                                 );
                                 return const Center(
-                                  child: Text('Terjadi Kesalahan'),
-                                );
+                                    child: Text('Terjadi Kesalahan'));
                               },
                             );
                           },
@@ -427,7 +573,7 @@ class _HomePageState extends State<HomePage> {
                               horizontal: 24.0, vertical: 16.0),
                           child: Button.filled(
                             onPressed: () {
-                              if(selectedCategory == null) {
+                              if (selectedCategory == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Pilih salah satu layanan'),
